@@ -1,0 +1,52 @@
+{% extends "delivery/base.html" %}
+
+{% block content %}
+
+<div
+  style="
+    max-width: 500px;
+    margin: 80px auto;
+    background-color: #ffffff;
+    padding: 35px;
+    border-radius: 14px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+    font-family: Arial, Helvetica, sans-serif;
+  "
+>
+  <h2
+    style="
+      text-align: center;
+      margin-bottom: 25px;
+      color: #333;
+    "
+  >
+    Submit Details
+  </h2>
+
+  <form method="POST">
+    {% csrf_token %}
+
+    <div style="margin-bottom: 20px;">
+      {{ form }}
+    </div>
+
+    <div style="text-align: center;">
+      <button
+        type="submit"
+        style="
+          background-color: #ff6b35;
+          color: white;
+          padding: 10px 26px;
+          font-size: 15px;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+        "
+      >
+        Submit
+      </button>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

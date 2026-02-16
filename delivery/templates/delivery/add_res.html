@@ -1,0 +1,88 @@
+{% extends "delivery/base.html" %}
+{% block content %}
+
+<div
+  style="
+    max-width: 600px;
+    margin: 60px auto;
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    font-family: Arial, Helvetica, sans-serif;
+  "
+>
+  <h2
+    style="
+      text-align: center;
+      margin-bottom: 25px;
+      color: #333;
+    "
+  >
+    Add Restaurant Details 🍽️
+  </h2>
+
+  <form method="POST">
+    {% csrf_token %}
+
+    <!-- Restaurant Name -->
+    <div style="margin-bottom: 15px;">
+      <label style="display: block; margin-bottom: 6px; font-weight: bold;">
+        Restaurant Name
+      </label>
+      {{ form.Res_name }}
+    </div>
+
+    <!-- Food Category -->
+    <div style="margin-bottom: 15px;">
+      <label style="display: block; margin-bottom: 6px; font-weight: bold;">
+        Food Category
+      </label>
+      {{ form.Food_cat }}
+    </div>
+
+    <!-- Rating -->
+    <div style="margin-bottom: 15px;">
+      <label style="display: block; margin-bottom: 6px; font-weight: bold;">
+        Rating
+      </label>
+      {{ form.rating }}
+    </div>
+
+    <!-- Image -->
+    <div style="margin-bottom: 15px;">
+      <label style="display: block; margin-bottom: 6px; font-weight: bold;">
+        Image URL
+      </label>
+      {{ form.img }}
+    </div>
+
+    <!-- Address -->
+    <div style="margin-bottom: 20px;">
+      <label style="display: block; margin-bottom: 6px; font-weight: bold;">
+        Address
+      </label>
+      {{ form.address }}
+    </div>
+
+    <!-- Submit Button -->
+    <div style="text-align: center;">
+      <button
+        type="submit"
+        style="
+          background-color: #ff6b35;
+          color: white;
+          padding: 10px 22px;
+          font-size: 15px;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+        "
+      >
+        Submit
+      </button>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

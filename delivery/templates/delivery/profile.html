@@ -1,0 +1,100 @@
+{% extends "delivery/customer_base.html" %}
+{% block content %}
+
+<div class="max-w-3xl mx-auto mt-10 bg-white shadow-lg rounded-2xl p-8">
+
+    <h2 class="text-2xl font-bold text-slate-800 mb-8 flex items-center gap-2">
+        <i class="fas fa-user-circle text-brand-500"></i>
+        My Profile
+    </h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <!-- Username -->
+        <div>
+            <p class="text-sm text-slate-500 font-semibold">Username</p>
+            <div class="mt-1 bg-slate-100 p-3 rounded-lg font-medium">
+                {{ user.username }}
+            </div>
+        </div>
+
+        <!-- Email -->
+        <div>
+            <p class="text-sm text-slate-500 font-semibold">Email ID</p>
+            <div class="mt-1 bg-slate-100 p-3 rounded-lg font-medium">
+                {{ user.email }}
+            </div>
+        </div>
+
+        <!-- Phone Number -->
+        <div>
+            <p class="text-sm text-slate-500 font-semibold">Phone Number</p>
+            <div class="mt-1 bg-slate-100 p-3 rounded-lg font-medium">
+                {{ customer.mobile }}
+            </div>
+        </div>
+
+        <!-- Delivery Address -->
+        <div>
+            <p class="text-sm text-slate-500 font-semibold">Delivery Address</p>
+            <div class="mt-1 bg-slate-100 p-3 rounded-lg font-medium">
+                {{ customer.address }}
+            </div>
+        </div>
+
+        <!-- Password with Eye Icon -->
+        <div class="md:col-span-2">
+            <p class="text-sm text-slate-500 font-semibold">Password</p>
+
+            <div class="mt-1 bg-slate-100 p-3 rounded-lg font-medium flex items-center justify-between">
+                <span id="passwordText" class="tracking-widest">
+                    ********
+                </span>
+
+                <button type="button"
+                        onclick="togglePassword()"
+                        class="text-slate-500 hover:text-brand-500">
+                    <i id="eyeIcon" class="fas fa-eye"></i>
+                </button>
+            </div>
+
+            <p class="text-xs text-slate-400 mt-1">
+                Passwords are securely encrypted and cannot be displayed
+            </p>
+        </div>
+
+    </div>
+
+    <!-- Back Button -->
+    <div class="mt-8">
+        <a href="{% url 'delivery:cusdisplay_res' user.username %}"
+           class="inline-block bg-slate-900 text-white px-6 py-3 rounded-xl font-bold hover:bg-slate-800 transition">
+            ← Back to Home
+        </a>
+    </div>
+
+</div>
+
+<!-- Password Toggle Script -->
+<script>
+    let passwordVisible = false;
+
+    function togglePassword() {
+        const passwordText = document.getElementById("passwordText");
+        const eyeIcon = document.getElementById("eyeIcon");
+
+        if (passwordVisible) {
+            passwordText.textContent = "********";
+            eyeIcon.classList.remove("fa-eye-slash");
+            eyeIcon.classList.add("fa-eye");
+        } else {
+            passwordText.textContent = "••••••••";
+            eyeIcon.classList.remove("fa-eye");
+            eyeIcon.classList.add("fa-eye-slash");
+        }
+
+        passwordVisible = !passwordVisible;
+    }
+</script>
+
+{% endblock %}

@@ -1,0 +1,114 @@
+{% extends 'delivery/customer_base.html' %}
+
+{% block content %}
+<div class="bg-slate-50 min-h-screen">
+    
+    <!-- Hero Section -->
+    <div class="relative bg-slate-900 py-24 overflow-hidden">
+        <!-- Background Decorative Blurs -->
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+             <div class="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-brand-500 opacity-20 blur-3xl"></div>
+             <div class="absolute top-1/2 left-10 w-64 h-64 rounded-full bg-orange-400 opacity-20 blur-3xl"></div>
+        </div>
+
+        <div class="container mx-auto px-6 relative z-10 text-center">
+             <span class="text-brand-500 font-bold tracking-wider uppercase text-sm mb-2 block animate-fade-in">Who We Are</span>
+             <h2 class="text-4xl md:text-5xl font-bold text-white mb-6 leading-tight animate-slide-down">
+                Revolutionizing <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-500 to-orange-500">Food Delivery</span>
+             </h2>
+             <p class="text-slate-400 text-lg max-w-2xl mx-auto mb-10 animate-fade-in" style="animation-delay: 0.1s;">
+                Food Delivery is an online platform that helps users order food from nearby restaurants quickly and easily.
+             </p>
+        </div>
+    </div>
+
+    <!-- Mission Section (Overlapping the Hero) -->
+    <div class="container mx-auto px-6 py-20 -mt-20 relative z-20">
+        <div class="bg-white rounded-3xl shadow-xl p-8 md:p-12 border border-slate-100">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <!-- Image Side -->
+                <div class="order-2 md:order-1 animate-fade-in" style="animation-delay: 0.2s;">
+                    <div class="relative group">
+                        <!-- Decorative rotation layer -->
+                        <div class="absolute inset-0 bg-brand-500 rounded-2xl rotate-3 opacity-10 transition-transform group-hover:rotate-6"></div>
+                        <!-- Placeholder Image (Unsplash) -->
+                        <img src="https://images.unsplash.com/photo-1556742049-0cfed4f7a07d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                             alt="Our Team" 
+                             class="relative rounded-2xl shadow-lg w-full h-80 object-cover transform transition-transform duration-500 group-hover:scale-[1.02]">
+                    </div>
+                </div>
+
+                <!-- Content Side -->
+                <div class="order-1 md:order-2 animate-fade-in" style="animation-delay: 0.3s;">
+                    <div class="inline-block p-3 rounded-2xl bg-brand-50 text-brand-600 mb-6">
+                        <i class="fas fa-bullseye text-2xl"></i>
+                    </div>
+                    <h3 class="text-3xl font-bold text-slate-900 mb-6">Our Mission</h3>
+                    <p class="text-slate-600 text-lg leading-relaxed mb-8">
+                        Our mission is to deliver <span class="font-bold text-brand-600">fresh food fast</span> with great service. We believe that good food shouldn't be hard to get. That's why we've built a network of the best local chefs and drivers to bring your favorites right to your door.
+                    </p>
+                    
+                    <!-- Stats Grid -->
+                    <div class="grid grid-cols-3 gap-4 border-t border-slate-100 pt-8">
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-slate-900">30m</div>
+                            <div class="text-xs text-slate-500 uppercase tracking-wide font-semibold">Avg Time</div>
+                        </div>
+                        <div class="text-center border-l border-slate-100">
+                            <div class="text-2xl font-bold text-slate-900">500+</div>
+                            <div class="text-xs text-slate-500 uppercase tracking-wide font-semibold">Partners</div>
+                        </div>
+                        <div class="text-center border-l border-slate-100">
+                            <div class="text-2xl font-bold text-slate-900">4.9</div>
+                            <div class="text-xs text-slate-500 uppercase tracking-wide font-semibold">Rating</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Values Grid -->
+    <div class="container mx-auto px-6 pb-24">
+        <div class="text-center mb-12 animate-fade-in">
+            <h3 class="text-2xl font-bold text-slate-900">Why Choose Us?</h3>
+            <p class="text-slate-500 mt-2">We strive for excellence in every order.</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8">
+            <!-- Feature 1 -->
+            <div class="bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border border-slate-100 group animate-fade-in" style="animation-delay: 0.1s;">
+                <div class="w-14 h-14 bg-blue-50 rounded-xl flex items-center justify-center text-blue-500 mb-6 group-hover:bg-blue-500 group-hover:text-white transition-colors duration-300">
+                    <i class="fas fa-shipping-fast text-2xl"></i>
+                </div>
+                <h4 class="text-xl font-bold text-slate-900 mb-3">Super Fast Delivery</h4>
+                <p class="text-slate-500 leading-relaxed">
+                    We prioritize speed without compromising safety, ensuring your food arrives hot and fresh.
+                </p>
+            </div>
+
+            <!-- Feature 2 -->
+            <div class="bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border border-slate-100 group animate-fade-in" style="animation-delay: 0.2s;">
+                <div class="w-14 h-14 bg-green-50 rounded-xl flex items-center justify-center text-green-500 mb-6 group-hover:bg-green-500 group-hover:text-white transition-colors duration-300">
+                    <i class="fas fa-leaf text-2xl"></i>
+                </div>
+                <h4 class="text-xl font-bold text-slate-900 mb-3">Fresh Ingredients</h4>
+                <p class="text-slate-500 leading-relaxed">
+                    We partner with restaurants that use only the highest quality, locally sourced ingredients.
+                </p>
+            </div>
+
+            <!-- Feature 3 -->
+            <div class="bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border border-slate-100 group animate-fade-in" style="animation-delay: 0.3s;">
+                <div class="w-14 h-14 bg-purple-50 rounded-xl flex items-center justify-center text-purple-500 mb-6 group-hover:bg-purple-500 group-hover:text-white transition-colors duration-300">
+                    <i class="fas fa-headset text-2xl"></i>
+                </div>
+                <h4 class="text-xl font-bold text-slate-900 mb-3">24/7 Support</h4>
+                <p class="text-slate-500 leading-relaxed">
+                    Our dedicated support team is always ready to help you with any questions or concerns.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends 'delivery/cusbase.html' %}
+
+{% block content %}
+
+<div
+  style="
+    max-width: 900px;
+    margin: 80px auto;
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 14px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+  "
+>
+  <h1 style="color: #333; margin-bottom: 15px;">
+    Welcome, {{ username }} 👋
+  </h1>
+
+  <p style="font-size: 18px; color: #555; margin-bottom: 25px;">
+    Explore restaurants, browse menus, and order your favorite food easily.
+  </p>
+
+  <div style="margin-top: 30px;">
+    <a
+      href="{% url 'delivery:cusdisplay_res' username %}"
+      style="
+        text-decoration: none;
+        background-color: #ff6b35;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-size: 16px;
+        margin-right: 10px;
+        display: inline-block;
+      "
+    >
+      🍽️ View Restaurants
+    </a>
+
+    <a
+      href="{% url 'delivery:show_cart' username %}"
+      style="
+        text-decoration: none;
+        background-color: #28a745;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-size: 16px;
+        display: inline-block;
+      "
+    >
+      🛒 View Cart
+    </a>
+  </div>
+</div>
+
+{% endblock %}

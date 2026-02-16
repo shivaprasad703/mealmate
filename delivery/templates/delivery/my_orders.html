@@ -1,0 +1,147 @@
+{% extends "delivery/customer_base.html" %}
+
+{% block content %}
+<!-- Styles specific to this page (Red/Black Theme) -->
+<!-- Note: Ideally, move these CDN links and styles to your base.html head -->
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
+
+<style>
+    /* Scope styles to this block to avoid breaking base layout */
+    .theme-wrapper {
+        font-family: 'Outfit', sans-serif;
+        background-color: #000000;
+        color: #e2e8f0;
+        min-height: 100vh;
+        position: relative;
+        overflow-x: hidden;
+    }
+
+    /* 3D Grid Background */
+    .bg-grid {
+        background-size: 50px 50px;
+        background-image: 
+            linear-gradient(to right, rgba(220, 38, 38, 0.1) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(220, 38, 38, 0.1) 1px, transparent 1px);
+        mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+    }
+
+    /* Blob Animations */
+    .blob {
+        position: absolute;
+        filter: blur(80px);
+        z-index: 0;
+        opacity: 0.5;
+        animation: float 10s infinite ease-in-out;
+    }
+    .blob-1 { top: -10%; left: -10%; width: 500px; height: 500px; background: #991b1b; animation-delay: 0s; }
+    .blob-2 { bottom: -10%; right: -10%; width: 400px; height: 400px; background: #ef4444; animation-delay: 2s; }
+
+    @keyframes float {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        33% { transform: translate(30px, -50px) scale(1.1); }
+        66% { transform: translate(-20px, 20px) scale(0.9); }
+    }
+
+    /* Glass Card */
+    .glass-card {
+        background: rgba(20, 0, 0, 0.6);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        transition: all 0.3s ease;
+    }
+    
+    .text-gradient {
+        background: linear-gradient(to right, #ef4444, #f97316);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+</style>
+
+<div class="theme-wrapper p-6 md:p-12">
+    <!-- Background Elements -->
+    <div class="absolute inset-0 bg-grid pointer-events-none z-0"></div>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <div class="relative z-10 max-w-5xl mx-auto">
+        <!-- Header -->
+        <h2 class="text-4xl md:text-5xl font-bold mb-10 text-center">
+            My <span class="text-gradient">Orders</span>
+        </h2>
+
+        <div class="grid gap-8">
+            {% for order in orders %}
+                <!-- Single Order Card -->
+                <div class="glass-card rounded-2xl p-6 md:p-8" data-tilt data-tilt-max="3" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.05">
+                    
+                    <!-- Order Header -->
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 border-b border-white/10 pb-4">
+                        <div class="flex items-center gap-3 mb-2 md:mb-0">
+                            <div class="w-10 h-10 rounded-full bg-red-600/20 flex items-center justify-center border border-red-500/30">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                                </svg>
+                            </div>
+                            <h4 class="text-xl font-bold text-white">Order #{{ order.id }}</h4>
+                        </div>
+                        <div class="bg-red-600/10 px-4 py-1 rounded-full border border-red-500/20">
+                            <span class="text-sm text-red-400 font-semibold">Total: ₹{{ order.total_amount }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Order Details -->
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div class="space-y-1">
+                            <p class="text-xs text-slate-500 uppercase tracking-wider">Email</p>
+                            <p class="text-slate-300">{{ order.user.email }}</p>
+                        </div>
+                        <div class="space-y-1">
+                            <p class="text-xs text-slate-500 uppercase tracking-wider">Delivery Address</p>
+                            <p class="text-slate-300">{{ order.user.customer.address }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Order Items -->
+                    <div class="bg-black/30 rounded-xl p-4 border border-white/5">
+                        <p class="text-xs text-slate-500 mb-3 uppercase tracking-wider">Items in Order</p>
+                        <ul class="space-y-2">
+                            {% for item in order.items.all %}
+                                <li class="flex justify-between items-center text-sm md:text-base border-b border-white/5 last:border-0 pb-2 last:pb-0">
+                                    <span class="text-slate-200">{{ item.menu_item.item_name }}</span>
+                                    <span class="text-slate-400 font-mono">₹{{ item.price }}</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% empty %}
+                <!-- Empty State -->
+                <div class="glass-card rounded-2xl p-12 text-center">
+                    <div class="w-20 h-20 bg-slate-800/50 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                    </div>
+                    <p class="text-xl text-slate-400">No orders found.</p>
+                    <p class="text-sm text-slate-500 mt-2">Looks like you haven't placed any orders yet.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script>
+    // Initialize Tilt Effect on loaded cards
+    if (typeof VanillaTilt !== 'undefined') {
+        VanillaTilt.init(document.querySelectorAll("[data-tilt]"), {
+            max: 3,
+            speed: 400,
+            glare: true,
+            "max-glare": 0.05,
+        });
+    }
+</script>
+{% endblock %}

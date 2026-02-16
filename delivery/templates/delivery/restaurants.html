@@ -1,0 +1,113 @@
+{% extends "delivery/base.html" %}
+
+{% block content %}
+
+<div
+  style="
+    max-width: 1200px;
+    margin: 40px auto;
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 14px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    font-family: Arial, Helvetica, sans-serif;
+  "
+>
+  <!-- HEADER -->
+  <div style="display:flex; justify-content:space-between; align-items:center;">
+    <h2 style="color:#333;">Admin – Restaurants 🍽️</h2>
+
+    {% if user.is_staff %}
+    <a href="{% url 'delivery:add_res' %}">
+      <button
+        style="
+          background:#ff6b35;
+          color:white;
+          padding:10px 18px;
+          border:none;
+          border-radius:8px;
+          cursor:pointer;
+          font-size:14px;
+        "
+      >
+        ➕ Add Restaurant
+      </button>
+    </a>
+    {% endif %}
+  </div>
+
+  <hr style="margin:20px 0;">
+
+  <!-- TABLE -->
+  <table style="width:100%; border-collapse:collapse;">
+    <tr style="background:#ff6b35; color:white;">
+      <th style="padding:12px;">Name</th>
+      <th style="padding:12px;">Category</th>
+      <th style="padding:12px;">Rating</th>
+      <th style="padding:12px;">Image</th>
+      <th style="padding:12px;">Address</th>
+      <th style="padding:12px;">Actions</th>
+    </tr>
+
+    {% for item in li %}
+    <tr style="text-align:center; border-bottom:1px solid #ddd;">
+      <td style="padding:10px;">{{ item.Res_name }}</td>
+      <td style="padding:10px;">{{ item.Food_cat }}</td>
+      <td style="padding:10px;">⭐ {{ item.rating }}/5</td>
+      <td style="padding:10px;">
+        <img
+          src="{{ item.img }}"
+          alt="Restaurant"
+          style="height:80px;width:120px;border-radius:10px;object-fit:cover;"
+        >
+      </td>
+      <td style="padding:10px;">{{ item.address }}</td>
+
+      <td style="padding:10px;">
+        <!-- ADD ITEM -->
+        <a href="{% url 'delivery:add_item' item.id %}">
+          <button
+            style="
+              background:#28a745;
+              color:white;
+              padding:6px 12px;
+              border:none;
+              border-radius:6px;
+              cursor:pointer;
+              margin-bottom:6px;
+            "
+          >
+            ➕ Add Item
+          </button>
+        </a>
+
+        <br>
+
+        <!-- VIEW ITEMS -->
+        <a href="{% url 'delivery:view_menu' item.id %}">
+          <button
+            style="
+              background:#007bff;
+              color:white;
+              padding:6px 12px;
+              border:none;
+              border-radius:6px;
+              cursor:pointer;
+            "
+          >
+            👁 View Items
+          </button>
+        </a>
+      </td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="6" style="text-align:center;padding:20px;">
+        No restaurants found.
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+
+{% endblock %}

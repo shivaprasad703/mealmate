@@ -1,0 +1,415 @@
+{% extends "delivery/customer_base.html" %}
+
+{% block content %}
+    <!-- Tailwind CSS (Ensure this is loaded if not in base) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Configuration & Styles -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#FF3F3F',   /* Vibrant Hot Red from reference */
+                        secondary: '#FF1A1A', /* Deep Red */
+                        dark: '#050505',      /* Rich Matte Black */
+                        cardbg: '#121212',    /* Card Background */
+                        surface: '#1E1E1E',   /* Surface Grey */
+                        glass: 'rgba(30, 30, 30, 0.7)',
+                    },
+                    animation: {
+                        'blob': 'blob 10s infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-15px)' },
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Force Deep Dark Theme Background */
+        body {
+            background-color: #050505 !important;
+            color: #f3f4f6;
+            font-family: 'Outfit', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* 3D Card Effects */
+        .card-3d-container {
+            perspective: 1200px;
+        }
+        
+        .card-3d {
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+        }
+        
+        .card-3d:hover {
+            transform: rotateY(4deg) rotateX(4deg) scale(1.02);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            z-index: 10;
+        }
+
+        .card-content {
+            transform: translateZ(20px);
+        }
+
+        .card-img-wrapper {
+            transform: translateZ(10px);
+            transition: transform 0.4s;
+        }
+        
+        .card-3d:hover .card-img-wrapper {
+            transform: translateZ(30px) scale(1.03);
+        }
+
+        /* Premium Glassmorphism - Reference Style */
+        .glass {
+            background: linear-gradient(145deg, rgba(30, 30, 30, 0.8), rgba(20, 20, 20, 0.9));
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        
+        .glass:hover {
+            border-color: rgba(255, 63, 63, 0.3);
+            box-shadow: 0 10px 40px -10px rgba(255, 63, 63, 0.15);
+        }
+
+        /* Active/High-Contrast Glass */
+        .glass-active {
+            background: rgba(255, 63, 63, 0.1);
+            border: 1px solid rgba(255, 63, 63, 0.4);
+            color: #FF3F3F;
+        }
+
+        /* Animated Background Mesh */
+        .mesh-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            background: radial-gradient(circle at 50% 50%, #1a0505 0%, #050505 100%);
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .mesh-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.3;
+            mix-blend-mode: screen;
+        }
+
+        /* Scrollbar */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        /* Custom Text Selection Color */
+        ::selection {
+            background: #FF3F3F;
+            color: white;
+        }
+        
+        /* Neon Glow Text */
+        .text-glow {
+            text-shadow: 0 0 10px rgba(255, 63, 63, 0.5);
+        }
+    </style>
+
+    <!-- Animated Background -->
+    <div class="mesh-bg">
+        <div class="mesh-blob w-[500px] h-[500px] bg-red-800 top-[-10%] left-[-10%] animate-blob"></div>
+        <div class="mesh-blob w-[400px] h-[400px] bg-red-900 top-[40%] right-[-10%] animate-blob" style="animation-delay: 2s;"></div>
+        <div class="mesh-blob w-[300px] h-[300px] bg-secondary bottom-[-5%] left-[30%] animate-blob" style="animation-delay: 4s;"></div>
+    </div>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <div class="min-h-screen pb-20 pt-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative z-10">
+
+        <!-- HERO SECTION -->
+        <section class="glass rounded-3xl p-8 md:p-12 mb-16 relative overflow-hidden animate-fade-in-up group">
+            <!-- Decorative circle inside card -->
+            <div class="absolute -top-20 -right-20 w-80 h-80 bg-gradient-to-br from-primary to-transparent opacity-10 blur-3xl rounded-full pointer-events-none group-hover:opacity-20 transition-opacity duration-500"></div>
+
+            <div class="flex flex-col md:flex-row items-center justify-between gap-12 relative z-10">
+                
+                <!-- Left Text -->
+                <div class="md:w-1/2 text-center md:text-left">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-primary text-sm font-bold tracking-wide mb-6 uppercase">
+                        <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span> Fastest Delivery
+                    </div>
+                    
+                    <h1 class="text-5xl md:text-7xl font-black leading-tight mb-6 text-white tracking-tight">
+                        Crave it? <br/>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-red-400 text-glow">Get it.</span>
+                    </h1>
+                    
+                    <p class="text-lg text-gray-400 mb-8 max-w-lg mx-auto md:mx-0 leading-relaxed font-light">
+                        {% if user.is_authenticated %}<span class="text-white font-medium">Hi {{ user.username }},</span>{% endif %}
+                        Discover {{ li|length }} premium restaurants near you. From comfort food to gourmet meals.
+                    </p>
+
+                    <!-- Search Bar -->
+                    <div class="relative max-w-md mx-auto md:mx-0 group">
+                        <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-gray-500 group-focus-within:text-primary transition-colors">
+                            <i class="fas fa-search text-lg"></i>
+                        </div>
+                        <input 
+                            type="text" 
+                            id="heroSearch" 
+                            onkeyup="syncAndFilter(this.value)"
+                            placeholder="What are you craving?" 
+                            class="w-full pl-14 pr-32 py-5 bg-[#0A0A0A] border border-white/10 rounded-2xl text-white placeholder-gray-600 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition-all shadow-2xl"
+                        >
+                        <button class="absolute right-2 top-2 bottom-2 bg-primary hover:bg-red-500 text-white px-8 rounded-xl font-bold transition-all shadow-[0_4px_14px_0_rgba(255,63,63,0.39)] hover:shadow-[0_6px_20px_rgba(255,63,63,0.23)] transform active:scale-95">
+                            Go
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right 3D Image -->
+                <div class="md:w-1/2 relative hidden md:block">
+                    <div class="relative w-full aspect-square max-w-[450px] mx-auto animate-float">
+                        <!-- Glowing backdrop behind image -->
+                        <div class="absolute inset-8 bg-primary rounded-full blur-[60px] opacity-20 animate-pulse-slow"></div>
+                        
+                        <!-- Main Image Container with jagged clip or custom shape could go here, keeping simple circle for now -->
+                        <div class="relative w-full h-full rounded-full border border-white/10 p-4 bg-white/5 backdrop-blur-sm">
+                             <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
+                                  alt="Delicious Pizza" 
+                                  class="rounded-full w-full h-full object-cover shadow-2xl relative z-10">
+                        </div>
+                        
+                        <!-- Floating Badge 1 (Glass Dark) -->
+                        <div class="absolute top-10 -left-0 bg-[#121212]/90 backdrop-blur-md border border-white/10 p-4 rounded-2xl shadow-2xl flex items-center gap-4 animate-bounce" style="animation-duration: 5s;">
+                            <div class="w-12 h-12 rounded-full bg-yellow-500/10 flex items-center justify-center text-yellow-500 text-xl border border-yellow-500/20">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold text-white text-base">4.9/5</p>
+                                <p class="text-xs text-gray-400 uppercase tracking-wider">Rating</p>
+                            </div>
+                        </div>
+
+                        <!-- Floating Badge 2 (Glass Dark) -->
+                        <div class="absolute bottom-10 -right-0 bg-[#121212]/90 backdrop-blur-md border border-white/10 p-4 rounded-2xl shadow-2xl flex items-center gap-4 animate-bounce" style="animation-duration: 6s;">
+                            <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xl border border-primary/20">
+                                <i class="fas fa-shipping-fast"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold text-white text-base">20 min</p>
+                                <p class="text-xs text-gray-400 uppercase tracking-wider">Delivery</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CATEGORIES -->
+        <section class="mb-20">
+            <div class="flex items-center justify-between mb-8 px-2">
+                <h3 class="text-2xl font-bold text-white flex items-center gap-2">
+                    <span class="w-1 h-8 bg-primary rounded-full"></span> Top Categories
+                </h3>
+                <div class="flex gap-2">
+                    <button class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-white hover:bg-white/10 transition-colors"><i class="fas fa-chevron-left"></i></button>
+                    <button class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-white hover:bg-white/10 transition-colors"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+            
+            <div class="flex gap-4 overflow-x-auto scrollbar-hide py-4 px-2" id="categories-scroll">
+                <button class="glass-active px-8 py-4 rounded-2xl transition-all flex items-center gap-3 group flex-shrink-0 shadow-[0_0_20px_rgba(255,63,63,0.15)]">
+                    <span class="text-2xl group-hover:scale-125 transition-transform duration-300">🔥</span> 
+                    <span class="font-bold tracking-wide">Popular</span>
+                </button>
+                <button class="glass hover:bg-white/5 text-gray-300 hover:text-white px-8 py-4 rounded-2xl transition-all flex items-center gap-3 group flex-shrink-0">
+                    <span class="text-2xl group-hover:scale-125 transition-transform duration-300">🍔</span> 
+                    <span class="font-bold tracking-wide">Burger</span>
+                </button>
+                <button class="glass hover:bg-white/5 text-gray-300 hover:text-white px-8 py-4 rounded-2xl transition-all flex items-center gap-3 group flex-shrink-0">
+                    <span class="text-2xl group-hover:scale-125 transition-transform duration-300">🍕</span> 
+                    <span class="font-bold tracking-wide">Pizza</span>
+                </button>
+                <button class="glass hover:bg-white/5 text-gray-300 hover:text-white px-8 py-4 rounded-2xl transition-all flex items-center gap-3 group flex-shrink-0">
+                    <span class="text-2xl group-hover:scale-125 transition-transform duration-300">🍣</span> 
+                    <span class="font-bold tracking-wide">Sushi</span>
+                </button>
+                <button class="glass hover:bg-white/5 text-gray-300 hover:text-white px-8 py-4 rounded-2xl transition-all flex items-center gap-3 group flex-shrink-0">
+                    <span class="text-2xl group-hover:scale-125 transition-transform duration-300">🌮</span> 
+                    <span class="font-bold tracking-wide">Mexican</span>
+                </button>
+                <button class="glass hover:bg-white/5 text-gray-300 hover:text-white px-8 py-4 rounded-2xl transition-all flex items-center gap-3 group flex-shrink-0">
+                    <span class="text-2xl group-hover:scale-125 transition-transform duration-300">🥗</span> 
+                    <span class="font-bold tracking-wide">Healthy</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- RESTAURANTS GRID -->
+        <section id="menu">
+            <div class="flex flex-col sm:flex-row items-end justify-between mb-10 px-2 gap-4">
+                <div>
+                    <h2 class="text-4xl font-black text-white mb-2">
+                        Restaurants
+                    </h2>
+                    <p class="text-gray-400">We found <span class="text-primary font-bold">{{ li|length }}</span> places matching your taste.</p>
+                </div>
+                
+                <!-- Styled Filter Pills -->
+                <div class="flex flex-wrap gap-2">
+                    <button class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-white text-sm hover:bg-primary hover:border-primary transition-colors">Relevance</button>
+                    <button class="px-4 py-2 rounded-full bg-transparent border border-white/10 text-gray-400 text-sm hover:text-white hover:border-white transition-colors">Rating</button>
+                    <button class="px-4 py-2 rounded-full bg-transparent border border-white/10 text-gray-400 text-sm hover:text-white hover:border-white transition-colors">Delivery Time</button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                {% for r in li %}
+                <!-- 3D Card Item -->
+                <div class="card-3d-container restaurant-card w-full" data-name="{{ r.Res_name|lower }}">
+                    <div class="card-3d glass rounded-[2rem] overflow-hidden h-full flex flex-col group relative bg-[#121212]">
+                        
+                        <!-- Image Area -->
+                        <div class="relative h-56 w-full overflow-hidden card-img-wrapper">
+                            <div class="absolute inset-0 bg-gradient-to-t from-[#121212] via-transparent to-transparent z-10"></div>
+                            <!-- Flash Sale / Tag -->
+                             {% if forloop.counter|divisibleby:2 %}
+                            <div class="absolute top-0 left-0 bg-primary text-white text-xs font-bold px-3 py-1.5 rounded-br-2xl z-20">
+                                PROMO
+                            </div>
+                            {% endif %}
+                            
+                            <img src="{{ r.img }}" 
+                                 alt="{{ r.Res_name }}" 
+                                 class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+                                 onerror="this.src='https://images.unsplash.com/photo-1552566626-52f8b828add9?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80'">
+                            
+                            <!-- Heart Icon -->
+                            <button class="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center text-white/70 hover:text-primary hover:bg-white transition-all transform hover:scale-110 border border-white/10">
+                                <i class="fas fa-heart"></i>
+                            </button>
+
+                            <!-- Delivery Time Tag (Floating) -->
+                            <div class="absolute bottom-4 right-4 z-20 bg-white/10 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-lg text-xs font-bold text-white flex items-center gap-1 shadow-lg">
+                                <i class="fas fa-clock text-primary"></i> 35 min
+                            </div>
+                        </div>
+
+                        <!-- Content Area -->
+                        <div class="p-6 flex-grow flex flex-col card-content relative z-20">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="text-xl font-bold text-white group-hover:text-primary transition-colors line-clamp-1 flex-1 mr-2">
+                                    {{ r.Res_name }}
+                                </h3>
+                                <div class="flex items-center gap-1 bg-green-500/20 px-2 py-0.5 rounded-md border border-green-500/30">
+                                    <span class="text-green-400 font-bold text-sm">{{ r.rating }}</span>
+                                    <i class="fas fa-star text-green-400 text-[10px]"></i>
+                                </div>
+                            </div>
+
+                            <p class="text-sm text-gray-500 mb-4 line-clamp-1 font-medium">
+                                {{ r.Food_cat }} • <span class="text-gray-600">{{ r.address }}</span>
+                            </p>
+                            
+                            <div class="mt-auto pt-4 border-t border-white/5 flex items-center justify-between">
+                                <div class="flex items-center gap-2 text-xs text-gray-400 font-medium">
+                                    <i class="fas fa-motorcycle"></i> Free Delivery
+                                </div>
+                                <a href="{% url 'delivery:cusmenu' r.id username %}" 
+                                   class="w-10 h-10 rounded-full bg-white text-black flex items-center justify-center hover:bg-primary hover:text-white transition-all transform group-hover:rotate-90">
+                                    <i class="fas fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-span-full flex flex-col items-center justify-center py-24 glass rounded-[2rem] border border-dashed border-white/10">
+                    <div class="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center mb-6 text-3xl grayscale opacity-50">🍽️</div>
+                    <h3 class="text-2xl font-bold text-gray-300 mb-2">No restaurants found</h3>
+                    <p class="text-gray-500">We couldn't find any matches for your search.</p>
+                    <button onclick="document.getElementById('heroSearch').value=''; syncAndFilter('')" class="mt-6 text-primary hover:text-white font-medium underline underline-offset-4">Clear Filters</button>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Scripts for Functionality & 3D Tilt -->
+    <script>
+        // 1. Search Filter Logic (Preserved)
+        function syncAndFilter(value) {
+            const filterValue = value.toLowerCase();
+            const cards = document.getElementsByClassName("restaurant-card");
+            
+            for (let i = 0; i < cards.length; i++) {
+                const name = cards[i].getAttribute("data-name");
+                if (name && name.includes(filterValue)) {
+                    cards[i].style.display = "block"; 
+                } else {
+                    cards[i].style.display = "none";
+                }
+            }
+        }
+
+        // 2. 3D Tilt Effect Logic
+        document.querySelectorAll('.card-3d').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                // Calculate rotation (Reduced for subtlety)
+                const rotateX = ((y - centerY) / centerY) * -5; 
+                const rotateY = ((x - centerX) / centerX) * 5;
+
+                card.style.transform = `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1200px) rotateX(0) rotateY(0) scale(1)';
+            });
+        });
+    </script>
+{% endblock %}

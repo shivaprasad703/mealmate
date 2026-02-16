@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Delivery | MealMate</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#fff0f1',
+                            100: '#ffdee2',
+                            500: '#ff2f48', // Primary Red
+                            600: '#e01b34',
+                            900: '#881337',
+                        },
+                        dark: {
+                            900: '#0f172a',
+                            800: '#1e293b',
+                            700: '#334155',
+                        }
+                    },
+                    boxShadow: {
+                        '3d': '0 4px 0 0 #bd1027', // The 3D depth shadow color
+                        '3d-hover': '0 6px 0 0 #bd1027',
+                        '3d-active': '0 0px 0 0 #bd1027',
+                        'glow': '0 0 15px rgba(255, 47, 72, 0.5)',
+                        'card': '0 10px 30px -10px rgba(0,0,0,0.1)',
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.6s ease-out forwards',
+                        'slide-down': 'slideDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        slideDown: {
+                            '0%': { opacity: '0', transform: 'translateY(-20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Modern Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f8fafc; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, #cbd5e1, #94a3b8); 
+            border-radius: 99px;
+            border: 2px solid #f8fafc;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b; 
+        }
+
+        /* Mobile Menu Transitions */
+        #mobile-menu {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transform-origin: top;
+            transform: scaleY(0.95);
+        }
+        #mobile-menu.open {
+            max-height: 500px;
+            opacity: 1;
+            transform: scaleY(1);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Glassmorphism Navigation */
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        /* 3D Button Utility */
+        .btn-3d {
+            transition: all 0.1s;
+            transform: translateY(0);
+        }
+        .btn-3d:active {
+            transform: translateY(4px);
+            box-shadow: 0 0px 0 0 #bd1027 !important; /* Removes shadow to look pressed */
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-slate-800 flex flex-col min-h-screen selection:bg-brand-500 selection:text-white overflow-x-hidden">
+
+    <!-- Background Decorative Blobs -->
+    <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        <div class="absolute -top-[10%] -right-[5%] w-[500px] h-[500px] rounded-full bg-brand-100 mix-blend-multiply filter blur-3xl opacity-30 animate-float"></div>
+        <div class="absolute top-[20%] -left-[10%] w-[400px] h-[400px] rounded-full bg-orange-100 mix-blend-multiply filter blur-3xl opacity-30 animate-float" style="animation-delay: 2s"></div>
+    </div>
+
+    <!-- ================= NAVBAR ================= -->
+    <nav class="glass-nav fixed w-full top-0 z-50 transition-all duration-300">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="flex justify-between items-center h-20 md:h-24">
+                
+                <!-- LOGO (With 3D Hover) -->
+                <a href="{% if user.is_authenticated %}{% url 'delivery:cusdisplay_res' request.user.username %}{% else %}{% url 'delivery:home' %}{% endif %}" class="flex items-center gap-3 group relative perspective-500">
+                    <div class="w-12 h-12 bg-gradient-to-br from-brand-500 to-brand-600 rounded-2xl flex items-center justify-center text-xl text-white shadow-lg shadow-brand-500/40 group-hover:rotate-12 transition-all duration-300 transform preserve-3d">
+                        <i class="fas fa-hamburger text-2xl drop-shadow-md"></i>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-2xl font-extrabold tracking-tight text-slate-900 leading-none group-hover:text-brand-600 transition-colors">Meal<span class="text-brand-500">Mate</span></span>
+                        <span class="text-[0.65rem] font-bold text-slate-400 uppercase tracking-widest pl-0.5">Tasty & Fast</span>
+                    </div>
+                </a>
+
+                <!-- DESKTOP LINKS -->
+                <div class="hidden md:flex items-center bg-white/50 px-2 py-1.5 rounded-full border border-white/60 shadow-sm backdrop-blur-sm">
+                    {% if request.user.is_authenticated %}
+                        <a href="{% url 'delivery:cusdisplay_res' request.user.username %}" 
+                           class="relative px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-300 overflow-hidden group
+                           {% if 'cusdisplay-res' in request.path %}bg-white text-brand-600 shadow-md{% else %}text-slate-600 hover:text-brand-600 hover:bg-white/60{% endif %}">
+                            <span class="relative z-10 flex items-center gap-2"><i class="fas fa-home text-xs"></i> Home</span>
+                        </a>
+                        
+                        <a href="{% url 'delivery:show_cart' request.user.username %}" 
+                           class="relative px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-300 overflow-hidden group
+                           {% if 'cart' in request.path %}bg-white text-brand-600 shadow-md{% else %}text-slate-600 hover:text-brand-600 hover:bg-white/60{% endif %}">
+                            <span class="relative z-10 flex items-center gap-2"><i class="fas fa-shopping-cart text-xs"></i> Cart</span>
+                        </a>
+                    {% else %}
+                        <a href="{% url 'delivery:home' %}" class="relative px-5 py-2.5 rounded-full text-sm font-bold text-slate-600 hover:text-brand-600 hover:bg-white/60 transition-all duration-300">
+                             Home
+                        </a>
+                    {% endif %}
+
+                    <a href="#restaurants" class="relative px-5 py-2.5 rounded-full text-sm font-bold text-slate-600 hover:text-brand-600 hover:bg-white/60 transition-all duration-300">
+                        Restaurants
+                    </a>
+                    
+                    <a href="{% url 'delivery:about' %}" 
+                       class="relative px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-300
+                       {% if 'about' in request.path %}bg-white text-brand-600 shadow-md{% else %}text-slate-600 hover:text-brand-600 hover:bg-white/60{% endif %}">
+                        About
+                    </a>
+                    
+                    <a href="{% url 'delivery:contact' %}" 
+                       class="relative px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-300
+                       {% if 'contact' in request.path %}bg-white text-brand-600 shadow-md{% else %}text-slate-600 hover:text-brand-600 hover:bg-white/60{% endif %}">
+                        Contact
+                    </a>
+
+                    {% if request.user.is_authenticated %}
+                        <a href="{% url 'delivery:my_orders' request.user.username %}"
+                           class="relative px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-300
+                           {% if 'my-orders' in request.path %}bg-white text-brand-600 shadow-md{% else %}text-slate-600 hover:text-brand-600 hover:bg-white/60{% endif %}">
+                           <span class="flex items-center gap-2"><i class="fas fa-box-open text-xs"></i> Orders</span>
+                        </a>
+                    {% endif %}
+                </div>
+
+                <!-- USER INFO / LOGIN (DESKTOP) -->
+                <div class="hidden md:flex items-center gap-4">
+                    {% if request.user.is_authenticated %}
+                        <div class="group relative">
+                            <a href="{% url 'delivery:profile' request.user.username %}"
+                               class="flex items-center gap-3 px-1 py-1 pl-4 bg-white border border-gray-100 rounded-full shadow-sm hover:shadow-lg hover:shadow-brand-100 hover:border-brand-200 transition-all duration-300 transform hover:-translate-y-0.5">
+                                <span class="text-sm font-bold text-slate-700 group-hover:text-brand-600 transition-colors">
+                                    {{ request.user.username }}
+                                </span>
+                                <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 border border-gray-100 group-hover:bg-brand-500 group-hover:text-white transition-all duration-300">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                            </a>
+                        </div>
+                        <a href="{% url 'delivery:logout' %}" class="w-10 h-10 flex items-center justify-center rounded-full bg-red-50 text-red-500 border border-red-100 hover:bg-red-500 hover:text-white hover:shadow-lg hover:shadow-red-500/30 hover:rotate-90 transition-all duration-300" title="Logout">
+                            <i class="fas fa-power-off"></i>
+                        </a>
+                    {% else %}
+                        <!-- 3D Login Button -->
+                        <a href="{% url 'delivery:sign_in' %}" class="btn-3d relative bg-brand-500 text-white px-7 py-2.5 rounded-xl font-bold shadow-3d hover:shadow-3d-hover hover:-translate-y-0.5 active:shadow-3d-active active:translate-y-1">
+                            Login <i class="fas fa-arrow-right ml-2 text-xs"></i>
+                        </a>
+                    {% endif %}
+                </div>
+
+                <!-- MOBILE MENU BUTTON -->
+                <button onclick="toggleMenu()" class="md:hidden p-3 rounded-xl bg-white/50 hover:bg-brand-50 text-slate-600 hover:text-brand-600 focus:outline-none transition-all duration-300 shadow-sm border border-white">
+                    <i class="fas fa-bars text-xl transition-transform" id="menu-icon"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- MOBILE MENU DROPDOWN (Modernized) -->
+        <div id="mobile-menu" class="md:hidden bg-white/95 backdrop-blur-xl border-b border-gray-100 absolute w-full">
+            <div class="flex flex-col px-6 py-6 space-y-3">
+                {% if request.user.is_authenticated %}
+                    <a href="{% url 'delivery:cusdisplay_res' request.user.username %}" class="flex items-center gap-4 p-4 rounded-2xl transition-all {% if 'cusdisplay-res' in request.path %}bg-brand-50 text-brand-600 shadow-inner{% else %}bg-gray-50 text-slate-600 hover:bg-white hover:shadow-md{% endif %}">
+                        <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm text-lg"><i class="fas fa-home"></i></div>
+                        <span class="font-bold">Home</span>
+                    </a>
+                    <a href="{% url 'delivery:show_cart' request.user.username %}" class="flex items-center gap-4 p-4 rounded-2xl transition-all {% if 'cart' in request.path %}bg-brand-50 text-brand-600 shadow-inner{% else %}bg-gray-50 text-slate-600 hover:bg-white hover:shadow-md{% endif %}">
+                        <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm text-lg"><i class="fas fa-shopping-cart"></i></div>
+                        <span class="font-bold">Cart</span>
+                    </a>
+                {% else %}
+                    <a href="{% url 'delivery:home' %}" class="flex items-center gap-4 p-4 rounded-2xl bg-gray-50 text-slate-600 hover:bg-white hover:shadow-md transition-all">
+                        <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm text-lg"><i class="fas fa-home"></i></div>
+                        <span class="font-bold">Home</span>
+                    </a>
+                {% endif %}
+                
+                <div class="grid grid-cols-2 gap-3">
+                    <a href="#restaurants" class="p-3 rounded-xl bg-gray-50 text-slate-600 font-bold text-center hover:bg-brand-50 hover:text-brand-600 transition-colors">Restaurants</a>
+                    <a href="{% url 'delivery:about' %}" class="p-3 rounded-xl bg-gray-50 text-slate-600 font-bold text-center hover:bg-brand-50 hover:text-brand-600 transition-colors">About</a>
+                    <a href="{% url 'delivery:contact' %}" class="p-3 rounded-xl bg-gray-50 text-slate-600 font-bold text-center hover:bg-brand-50 hover:text-brand-600 transition-colors">Contact</a>
+                    {% if request.user.is_authenticated %}
+                    <a href="{% url 'delivery:my_orders' request.user.username %}" class="p-3 rounded-xl bg-gray-50 text-slate-600 font-bold text-center hover:bg-brand-50 hover:text-brand-600 transition-colors">Orders</a>
+                    {% endif %}
+                </div>
+
+                <div class="pt-6 mt-4 border-t border-dashed border-gray-200">
+                    {% if request.user.is_authenticated %}
+                        <div class="flex items-center justify-between p-4 bg-brand-50 rounded-2xl border border-brand-100">
+                            <a href="{% url 'delivery:profile' request.user.username %}" class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-brand-200 text-brand-600 flex items-center justify-center font-bold">
+                                    {{ request.user.username|slice:":1" }}
+                                </div>
+                                <div>
+                                    <p class="text-xs text-brand-400 font-bold uppercase">Logged in as</p>
+                                    <p class="text-slate-900 font-black">{{ request.user.username }}</p>
+                                </div>
+                            </a>
+                            <a href="{% url 'delivery:logout' %}" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white text-red-500 shadow-sm hover:bg-red-500 hover:text-white transition-colors">
+                                <i class="fas fa-sign-out-alt"></i>
+                            </a>
+                        </div>
+                    {% else %}
+                        <a href="{% url 'delivery:sign_in' %}" class="btn-3d w-full block bg-brand-500 text-white text-center py-4 rounded-2xl font-black text-lg shadow-3d hover:shadow-3d-hover active:shadow-3d-active active:translate-y-1">
+                            Login Now
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ================= PAGE CONTENT ================= -->
+    <main class="flex-grow pt-28 pb-10 px-4 md:px-0 relative z-0">
+        
+        <!-- Django Messages (Toast Style) -->
+        {% if messages %}
+            <div class="container mx-auto px-6 mb-8 flex flex-col items-center">
+                {% for message in messages %}
+                    <div class="max-w-xl w-full p-4 mb-3 rounded-2xl shadow-lg shadow-gray-200/50 flex items-center gap-4 animate-slide-down border-l-8
+                        {% if message.tags == 'error' %}bg-white border-red-500 text-red-600{% elif message.tags == 'success' %}bg-white border-green-500 text-green-600{% else %}bg-white border-blue-500 text-blue-600{% endif %}">
+                        
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0
+                            {% if message.tags == 'error' %}bg-red-100{% elif message.tags == 'success' %}bg-green-100{% else %}bg-blue-100{% endif %}">
+                            {% if message.tags == 'error' %}<i class="fas fa-exclamation"></i>{% elif message.tags == 'success' %}<i class="fas fa-check"></i>{% else %}<i class="fas fa-info"></i>{% endif %}
+                        </div>
+                        
+                        <div class="font-medium">
+                            {{ message }}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- Child templates render here -->
+        {% block content %}{% endblock %}
+
+    </main>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="relative bg-dark-900 text-slate-400 mt-auto pt-24 pb-12 overflow-hidden">
+        
+        <!-- SVG Wave Top Decoration -->
+        <div class="absolute top-0 left-0 w-full overflow-hidden leading-none rotate-180">
+            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none" class="relative block h-[60px] w-[calc(100%+1.3px)] fill-gray-50">
+                <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"></path>
+            </svg>
+        </div>
+
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+                
+                <!-- Brand Column -->
+                <div class="space-y-6">
+                    <div class="flex items-center gap-3 text-white">
+                        <div class="w-10 h-10 bg-gradient-to-tr from-brand-500 to-orange-500 rounded-xl flex items-center justify-center text-lg shadow-lg shadow-brand-500/20 animate-float">
+                            🍔
+                        </div>
+                        <span class="text-2xl font-bold tracking-tight">MealMate.</span>
+                    </div>
+                    <p class="text-sm leading-relaxed text-slate-400">
+                        Delivering happiness to your doorstep with the freshest ingredients, fastest delivery, and 3D flavors that pop!
+                    </p>
+                    <div class="flex space-x-3">
+                        <a href="#" class="w-10 h-10 rounded-full bg-dark-800 border border-dark-700 flex items-center justify-center hover:bg-brand-500 hover:text-white hover:border-brand-500 hover:-translate-y-1 transition-all duration-300 shadow-lg"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-dark-800 border border-dark-700 flex items-center justify-center hover:bg-blue-600 hover:text-white hover:border-blue-600 hover:-translate-y-1 transition-all duration-300 shadow-lg"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-dark-800 border border-dark-700 flex items-center justify-center hover:bg-pink-600 hover:text-white hover:border-pink-600 hover:-translate-y-1 transition-all duration-300 shadow-lg"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+
+                <!-- Footer Links Columns with hover slide effect -->
+                <div>
+                    <h4 class="text-white font-bold mb-6 text-lg relative inline-block after:content-[''] after:absolute after:-bottom-2 after:left-0 after:w-8 after:h-1 after:bg-brand-500 after:rounded-full">Company</h4>
+                    <ul class="space-y-4 text-sm font-medium">
+                        <li><a href="#" class="flex items-center gap-2 hover:text-brand-500 hover:translate-x-2 transition-all duration-300 group"><span class="w-1.5 h-1.5 rounded-full bg-dark-700 group-hover:bg-brand-500 transition-colors"></span> About Us</a></li>
+                        <li><a href="#" class="flex items-center gap-2 hover:text-brand-500 hover:translate-x-2 transition-all duration-300 group"><span class="w-1.5 h-1.5 rounded-full bg-dark-700 group-hover:bg-brand-500 transition-colors"></span> Our Team</a></li>
+                        <li><a href="#" class="flex items-center gap-2 hover:text-brand-500 hover:translate-x-2 transition-all duration-300 group"><span class="w-1.5 h-1.5 rounded-full bg-dark-700 group-hover:bg-brand-500 transition-colors"></span> Careers</a></li>
+                        <li><a href="#" class="flex items-center gap-2 hover:text-brand-500 hover:translate-x-2 transition-all duration-300 group"><span class="w-1.5 h-1.5 rounded-full bg-dark-700 group-hover:bg-brand-500 transition-colors"></span> Blog</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-bold mb-6 text-lg relative inline-block after:content-[''] after:absolute after:-bottom-2 after:left-0 after:w-8 after:h-1 after:bg-brand-500 after:rounded-full">Support</h4>
+                    <ul class="space-y-4 text-sm font-medium">
+                        <li><a href="#" class="flex items-center gap-2 hover:text-brand-500 hover:translate-x-2 transition-all duration-300 group"><span class="w-1.5 h-1.5 rounded-full bg-dark-700 group-hover:bg-brand-500 transition-colors"></span> Help Center</a></li>
+                        <li><a href="#" class="flex items-center gap-2 hover:text-brand-500 hover:translate-x-2 transition-all duration-300 group"><span class="w-1.5 h-1.5 rounded-full bg-dark-700 group-hover:bg-brand-500 transition-colors"></span> Terms of Service</a></li>
+                        <li><a href="#" class="flex items-center gap-2 hover:text-brand-500 hover:translate-x-2 transition-all duration-300 group"><span class="w-1.5 h-1.5 rounded-full bg-dark-700 group-hover:bg-brand-500 transition-colors"></span> Privacy Policy</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact -->
+                <div>
+                    <h4 class="text-white font-bold mb-6 text-lg relative inline-block after:content-[''] after:absolute after:-bottom-2 after:left-0 after:w-8 after:h-1 after:bg-brand-500 after:rounded-full">Get in Touch</h4>
+                    <ul class="space-y-5 text-sm">
+                        <li class="flex items-start gap-4 group">
+                            <div class="w-8 h-8 rounded-lg bg-dark-800 flex items-center justify-center text-brand-500 group-hover:bg-brand-500 group-hover:text-white transition-all shadow-md">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <span class="mt-1">123 Flavor Street, Foodie City,<br>FC 90210</span>
+                        </li>
+                        <li class="flex items-center gap-4 group">
+                            <div class="w-8 h-8 rounded-lg bg-dark-800 flex items-center justify-center text-brand-500 group-hover:bg-brand-500 group-hover:text-white transition-all shadow-md">
+                                <i class="fas fa-phone-alt"></i>
+                            </div>
+                            <span>+1 (555) 123-4567</span>
+                        </li>
+                        <li class="flex items-center gap-4 group">
+                            <div class="w-8 h-8 rounded-lg bg-dark-800 flex items-center justify-center text-brand-500 group-hover:bg-brand-500 group-hover:text-white transition-all shadow-md">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <span>support@mealmate.com</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-dark-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="text-xs text-slate-500 font-medium">
+                    &copy; 2024 MealMate Inc. All rights reserved.
+                </div>
+                <div class="flex gap-4">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Google_Play_Store_badge_EN.svg/2560px-Google_Play_Store_badge_EN.svg.png" alt="Play Store" class="h-10 opacity-70 hover:opacity-100 cursor-pointer hover:scale-105 transition-all duration-300">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Download_on_the_App_Store_Badge.svg/2560px-Download_on_the_App_Store_Badge.svg.png" alt="App Store" class="h-10 opacity-70 hover:opacity-100 cursor-pointer hover:scale-105 transition-all duration-300">
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const icon = document.getElementById('menu-icon');
+            
+            menu.classList.toggle('open');
+            
+            if(menu.classList.contains('open')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+                icon.classList.add('rotate-90'); // Add rotation effect
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+                icon.classList.remove('rotate-90');
+            }
+        }
+    </script>
+</body>
+</html>

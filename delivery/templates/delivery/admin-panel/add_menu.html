@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Menu Item</title>
+    <style>
+        body {
+            background: #121212;
+            color: #ddd;
+            font-family: system-ui;
+        }
+
+        .container {
+            width: 70%;
+            margin: 40px auto;
+        }
+
+        label {
+            display: block;
+            margin-top: 25px;
+            font-weight: bold;
+        }
+
+        select, input, textarea {
+            width: 100%;
+            background: #1f1f1f;
+            border: 1px solid #444;
+            padding: 10px;
+            color: white;
+            border-radius: 4px;
+            margin-top: 8px;
+        }
+
+        textarea {
+            height: 150px;
+        }
+
+        .checkbox {
+            margin-top: 15px;
+        }
+
+        button {
+            margin-top: 30px;
+            padding: 12px 25px;
+            background: #417690;
+            color: white;
+            border: none;
+            font-size: 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #2b5f78;
+        }
+
+        .back {
+            display: inline-block;
+            margin-top: 20px;
+            color: #9da6af;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>Add menu</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <label>Restaurant:</label>
+        <select name="restaurant" required>
+            <option value="">---------</option>
+            {% for r in restaurants %}
+                <option value="{{ r.id }}">{{ r.Res_name }}</option>
+            {% endfor %}
+        </select>
+
+        <label>Item name:</label>
+        <input type="text" name="item_name" required>
+
+        <label>Description:</label>
+        <textarea name="description"></textarea>
+
+        <label>Price:</label>
+        <input type="number" step="0.01" name="price" required>
+
+        <label>Category:</label>
+        <input type="text" name="category">
+
+        <div class="checkbox">
+            <input type="checkbox" name="is_available" checked>
+            <label style="display:inline"> Is available</label>
+        </div>
+
+        <button type="submit">Save</button>
+    </form>
+
+    <a class="back" href="{% url 'delivery:admin_restaurants' %}">
+        ← Back to restaurants
+    </a>
+</div>
+
+</body>
+</html>

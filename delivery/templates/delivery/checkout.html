@@ -1,0 +1,111 @@
+{% extends 'delivery/customer_base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="bg-slate-50 min-h-screen py-12 font-sans flex items-center justify-center">
+    <div class="container mx-auto px-4 max-w-2xl relative">
+
+        <!-- Background decorations -->
+        <div class="absolute -top-10 -left-10 w-64 h-64 bg-emerald-50 rounded-full blur-3xl opacity-60"></div>
+        <div class="absolute top-20 -right-10 w-40 h-40 bg-slate-200 rounded-full blur-2xl opacity-40"></div>
+
+        <!-- Card -->
+        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-100 relative z-10">
+
+            <!-- Header -->
+            <div class="bg-slate-900 px-8 py-6 text-white flex justify-between items-center">
+                <div>
+                    <h1 class="text-2xl font-black">Checkout</h1>
+                    <p class="text-slate-400 text-xs font-bold uppercase">
+                        Order for @{{ username }}
+                    </p>
+                </div>
+            </div>
+
+            <div class="p-8">
+                {% if error %}
+                    <p class="text-red-600 font-bold">{{ error }}</p>
+                {% else %}
+
+                <!-- Order summary -->
+                <div class="space-y-4 mb-8">
+                    <h2 class="text-sm font-bold text-slate-400 uppercase">Order Summary</h2>
+
+                    <div class="bg-slate-50 rounded-2xl p-4 border space-y-3">
+                        {% for item in cart_items %}
+                        <div class="flex justify-between">
+                            <span class="font-bold">{{ item.item.item_name }}</span>
+                            <span>₹{{ item.item.price }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Total -->
+                <div class="flex justify-between border-t pt-6 mb-8">
+                    <span class="font-bold">Total</span>
+                    <span class="text-2xl font-black">₹{{ total_price }}</span>
+                </div>
+
+                <!-- Pay Button -->
+                <button id="rzp-button"
+                        class="w-full bg-slate-900 hover:bg-emerald-600 text-white py-4 rounded-xl font-bold text-lg">
+                    Pay Securely
+                </button>
+
+                {% endif %}
+            </div>
+
+            <!-- Cancel -->
+            <div class="bg-slate-50 p-4 text-center border-t">
+                <a href="{% url 'delivery:show_cart' username %}" class="font-bold">
+                    Cancel and return to cart
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================= RAZORPAY + BACKEND LINK ================= -->
+
+<!-- Razorpay JS -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<!-- Hidden form (VERY IMPORTANT) -->
+<form id="payment-form"
+      method="POST"
+      action="{% url 'delivery:payment_success' username %}">
+    {% csrf_token %}
+    <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
+</form>
+
+<script>
+var options = {
+    key: "{{ razorpay_key_id }}",
+    amount: "{{ total_price|floatformat:0 }}00",
+    currency: "INR",
+    name: "Meal Mate",
+    description: "Food Order Payment",
+    order_id: "{{ order_id }}",
+
+    handler: function (response) {
+        // send payment id to backend
+        document.getElementById("razorpay_payment_id").value =
+            response.razorpay_payment_id;
+        document.getElementById("payment-form").submit();
+    },
+
+    theme: {
+        color: "#10b981"
+    }
+};
+
+var rzp = new Razorpay(options);
+
+document.getElementById("rzp-button").onclick = function(e) {
+    rzp.open();
+    e.preventDefault();
+};
+</script>
+
+{% endblock %}

@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meal Mate | Manage Menu</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts (Outfit) -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #FF4757;
+            --primary-hover: #FF6B81;
+            --dark: #2F3542;
+            --light-bg: #F1F2F6;
+            --card-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            --gradient: linear-gradient(135deg, #FF4757 0%, #FF6B81 100%);
+            --danger-light: #ffebee;
+            --danger-text: #c62828;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--light-bg);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Abstract Background Decoration */
+        .bg-decoration {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 340px;
+            background: var(--dark);
+            border-bottom-left-radius: 50px;
+            border-bottom-right-radius: 50px;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bg-shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.4;
+            animation: float 8s infinite ease-in-out;
+        }
+        
+        .shape-1 { top: -50px; left: -50px; width: 300px; height: 300px; background: var(--primary); }
+        .shape-2 { bottom: -50px; right: -50px; width: 400px; height: 400px; background: #5352ed; animation-delay: 2s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Navbar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .brand-text {
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .brand-text span { color: var(--primary); }
+        
+        .admin-badge {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 5px 15px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        /* Main Content */
+        .main-container {
+            max-width: 1000px;
+            margin: -60px auto 50px;
+            padding: 0 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .header-section {
+            color: white;
+            padding-top: 40px;
+            padding-bottom: 80px;
+        }
+
+        .restaurant-pill {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(5px);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.9);
+            display: inline-block;
+            margin-top: 5px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Table Card */
+        .table-card {
+            background: white;
+            border-radius: 24px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.02);
+        }
+
+        .table thead th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #747d8c;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+            padding: 20px;
+            border-bottom: 2px solid #edf2f7;
+        }
+
+        .table tbody td {
+            vertical-align: middle;
+            padding: 20px;
+            border-bottom: 1px solid #edf2f7;
+            color: var(--dark);
+            font-size: 0.95rem;
+        }
+
+        .table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Item Styles */
+        .item-img {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .item-price {
+            font-weight: 700;
+            color: var(--primary);
+            background: #fff0f1;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        /* Buttons */
+        .btn-add {
+            background: var(--gradient);
+            border: none;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(255, 71, 87, 0.3);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-add:hover {
+            transform: translateY(-2px);
+            color: white;
+            box-shadow: 0 8px 25px rgba(255, 71, 87, 0.4);
+        }
+
+        .btn-delete {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background-color: var(--danger-light);
+            color: var(--danger-text);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-delete:hover {
+            background-color: var(--danger-text);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Empty State */
+        .empty-state {
+            padding: 80px 20px;
+            text-align: center;
+        }
+        
+        .empty-icon {
+            font-size: 4rem;
+            color: #dfe6e9;
+            margin-bottom: 20px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            margin-top: 30px;
+            color: #747d8c;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            background: white;
+            padding: 10px 25px;
+            border-radius: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .back-link:hover {
+            color: var(--primary);
+            transform: translateX(-5px);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background Decoration -->
+    <div class="bg-decoration">
+        <div class="bg-shape shape-1"></div>
+        <div class="bg-shape shape-2"></div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="{% url 'delivery:admin_dashboard' %}" class="brand-text">
+                <i class="bi bi-egg-fried"></i> Meal<span>Mate</span>
+                <span class="admin-badge">Admin</span>
+            </a>
+            <div class="d-none d-md-block text-white opacity-75 small">
+                <i class="bi bi-shield-lock-fill me-2"></i>Secure Management
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header Section -->
+    <div class="container header-section" data-aos="fade-down">
+        <div class="d-flex justify-content-between align-items-end flex-wrap gap-3">
+            <div>
+                <h1 class="fw-bold mb-1">Manage Menu</h1>
+                <div class="restaurant-pill">
+                    <i class="bi bi-shop me-2"></i>{{ restaurant.Res_name }}
+                </div>
+            </div>
+            
+            <a href="{% url 'delivery:add_menu' restaurant.id %}" class="btn-add">
+                <i class="bi bi-plus-lg"></i> Add New Item
+            </a>
+        </div>
+    </div>
+
+    <div class="main-container">
+        
+        <!-- Table Card -->
+        <div class="table-card" data-aos="fade-up" data-aos-delay="100">
+            <div class="table-responsive">
+                <table class="table mb-0 align-middle">
+                    <thead>
+                        <tr>
+                            <th class="ps-4">Image</th>
+                            <th>Item Name</th>
+                            <th>Price</th>
+                            <th class="text-end pe-4">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in items %}
+                        <tr class="animate__animated animate__fadeIn">
+                            <td class="ps-4">
+                                <img src="{{ i.image.url }}" class="item-img"
+                                     onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=80'"
+                                     alt="{{ i.item_name }}">
+                            </td>
+                            <td>
+                                <span class="fw-bold text-dark">{{ i.item_name }}</span>
+                                {% if not i.is_available %}
+                                    <span class="badge bg-secondary ms-2" style="font-size: 0.7em;">Unavailable</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="item-price">₹{{ i.price }}</span>
+                            </td>
+                            <td class="text-end pe-4">
+                                <a href="{% url 'delivery:delete_menu' i.id %}" 
+                                   class="btn-delete" 
+                                   title="Delete Item" 
+                                   onclick="return confirm('Are you sure you want to delete {{ i.item_name }}?');"
+                                   data-bs-toggle="tooltip">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4">
+                                <div class="empty-state">
+                                    <div class="empty-icon"><i class="bi bi-journal-x"></i></div>
+                                    <h4 class="fw-bold text-muted">No items in the menu yet</h4>
+                                    <p class="text-secondary mb-0">Start by adding delicious food items to this restaurant.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <a href="{% url 'delivery:admin_restaurants' %}" class="back-link" data-aos="fade-in" data-aos-delay="200">
+            <i class="bi bi-arrow-left me-2"></i> Back to Restaurants
+        </a>
+
+    </div>
+
+    <!-- Bootstrap JS & Tooltips -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- AOS Animation Library JS -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <script>
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 50
+        });
+
+        // Initialize Bootstrap Tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
+</body>
+</html>
